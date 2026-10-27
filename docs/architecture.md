@@ -30,13 +30,13 @@ OctoFit Tracker is a three-tier application for a school fitness program. The st
 
 Record your plan here before editing code.
 
-- Presentation tier decision:
-- Logic tier decision:
-- Data tier decision:
-- Activity tracking approach:
-- Team management approach:
-- Leaderboard approach:
-- Workout suggestions approach:
+- Presentation tier decision: Componentele react folosesc API Adiseaza datele primite, gol sau eroare
+- Logic tier decision: In functie de datele primite se actualizeaza datele, se fac estimari si sugestii
+- Data tier decision: Datele sunt verificate si salvate in baza de date pentru a putea fi interogate
+- Activity tracking approach: Poate fi indicat de user/antrenor ce exercitiu face si cat timp si in functie de date biometrice i se va sugera un outcome
+- Team management approach: Se pot crea echipe cu un coordonator ce poate actualiza precum si imparti/distribui exercitii specifice
+- Leaderboard approach: In functie de estimarile date de datele biometrice precum si de exercitiile facute se va crea un leaderbord cu diverse filtre
+- Workout suggestions approach: Mai intai pe categorii de scop final si apoi ce parti ale corpului se doreste sa se lucreze
 
 ## Test plan
 
