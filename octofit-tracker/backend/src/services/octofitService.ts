@@ -103,8 +103,43 @@ export async function getLeaderboard() {
     .map((team, index) => ({ ...team, rank: index + 1 }));
 }
 
-export async function suggestWorkouts(_userEmail: string) {
-  return Workout.find().limit(1).lean();
+export async function suggestWorkouts(userEmail: string) {
+  const user = await User.findOne({ email: userEmail }).select('_id fitnessGoal').lean();
+  if (!user) {
+    throw Object.assign(new Error('User not found'), { status: 404 });
+  }
+
+  const recentActivities = await Activity.find({ user: user._id })
+    .sort({ occurredAt: -1 })
+    .select('type')
+    .lean();
+  const recentType = recentActivities[0]?.type?.trim().toLowerCase();
+  const activityFocus = recentType
+    ? ({
+        run: 'endurance',
+        running: 'endurance',
+        cycle: 'endurance',
+        cycling: 'endurance',
+        walk: 'endurance',
+        walking: 'endurance',
+        strength: 'strength',
+      }[recentType] ?? recentType)
+    : undefined;
+  const goal = user.fitnessGoal?.trim().toLowerCase();
+  const preferredFocuses = [goal, activityFocus].filter(
+    (focus): focus is string => Boolean(focus),
+  );
+
+  if (preferredFocuses.length === 0) return [];
+
+  const workouts = await Workout.find({ focus: { $in: preferredFocuses } }).lean();
+  return workouts.map((workout) => ({
+    ...workout,
+    reason:
+      workout.focus.toLowerCase() === activityFocus && recentType
+        ? `Suggested based on your recent ${recentType} activity.`
+        : `Suggested to support your ${workout.focus} goal.`,
+  }));
 }
 
 export { User };
